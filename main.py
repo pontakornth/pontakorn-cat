@@ -8,36 +8,47 @@ from gamelib import Sprite, GameApp, Text
 from consts import *
 
 
+def linear_strategy(fruit, speed):
+    fruit.x -= speed
+
+
+def slide_strategy(fruit):
+    fruit.x -= FRUIT_FAST_SPEED
+    fruit.y += fruit.direction * 5
+
+
+def curvy_strategy(fruit):
+    fruit.x -= FRUIT_SLOW_SPEED * 1.2
+    fruit.t += 1
+    fruit.y += math.sin(fruit.t * 0.08) * 10
+
+
 class Fruit(Sprite):
-    def __init__(self,app, sprite, x, y):
+    def strategy(self):
+        linear_strategy(self, FRUIT_SLOW_SPEED)
+
+    def __init__(self, app, sprite, x, y):
         super().__init__(app, sprite, x, y)
 
         self.app = app
 
     def update(self):
+        self.strategy()
         if self.x <= -30:
             self.to_be_deleted = True
+
 
 class SlowFruit(Fruit):
     def __init__(self, app, x, y):
         super().__init__(app, 'images/apple.gif', x, y)
-
-        self.app = app
-
-    def update(self):
-        self.x -= FRUIT_SLOW_SPEED
-        super().update()
 
 
 class FastFruit(Fruit):
     def __init__(self, app, x, y):
         super().__init__(app, 'images/banana.gif', x, y)
 
-
-    def update(self):
-        self.x -= FRUIT_FAST_SPEED
-        super().update()
-
+    def strategy(self):
+        linear_strategy(self, FRUIT_FAST_SPEED)
 
 
 class SlideFruit(Fruit):
@@ -46,10 +57,8 @@ class SlideFruit(Fruit):
 
         self.direction = randint(0, 1) * 2 - 1
 
-    def update(self):
-        self.x -= FRUIT_FAST_SPEED
-        self.y += self.direction * 5
-        super().update()
+    def strategy(self):
+        slide_strategy(self)
 
 
 class CurvyFruit(Fruit):
@@ -58,12 +67,8 @@ class CurvyFruit(Fruit):
 
         self.t = randint(0, 360) * 2 * math.pi / 360
 
-    def update(self):
-        self.x -= FRUIT_SLOW_SPEED * 1.2
-        self.t += 1
-        self.y += math.sin(self.t * 0.08) * 10
-        super().update()
-
+    def strategy(self):
+        curvy_strategy(self)
 
 
 class Cat(Sprite):
@@ -86,7 +91,7 @@ class Cat(Sprite):
     def check_collision(self, fruit):
         if self.distance_to(fruit) <= CAT_CATCH_DISTANCE:
             fruit.to_be_deleted = True
-            # self.app.score += 1
+            self.app.score += 1
             self.app.update_score()
 
 
