@@ -14,6 +14,9 @@ class Fruit(Sprite):
 
         self.app = app
 
+    def update(self):
+        if self.x <= -30:
+            self.to_be_deleted = True
 
 class SlowFruit(Fruit):
     def __init__(self, app, x, y):
@@ -23,9 +26,7 @@ class SlowFruit(Fruit):
 
     def update(self):
         self.x -= FRUIT_SLOW_SPEED
-
-        if self.x < -30:
-            self.to_be_deleted = True
+        super().update()
 
 
 class FastFruit(Fruit):
@@ -35,9 +36,8 @@ class FastFruit(Fruit):
 
     def update(self):
         self.x -= FRUIT_FAST_SPEED
+        super().update()
 
-        if self.x < -30:
-            self.to_be_deleted = True
 
 
 class SlideFruit(Fruit):
@@ -49,9 +49,7 @@ class SlideFruit(Fruit):
     def update(self):
         self.x -= FRUIT_FAST_SPEED
         self.y += self.direction * 5
-
-        if self.x < -30:
-            self.to_be_deleted = True
+        super().update()
 
 
 class CurvyFruit(Fruit):
@@ -64,9 +62,8 @@ class CurvyFruit(Fruit):
         self.x -= FRUIT_SLOW_SPEED * 1.2
         self.t += 1
         self.y += math.sin(self.t * 0.08) * 10
+        super().update()
 
-        if self.x < -30:
-            self.to_be_deleted = True
 
 
 class Cat(Sprite):
@@ -78,11 +75,13 @@ class Cat(Sprite):
 
     def update(self):
         if self.direction == CAT_UP:
-            if self.y >= CAT_MARGIN:
-                self.y -= CAT_SPEED
+            self.y -= CAT_SPEED
+            if self.y <= - CAT_MARGIN:
+                self.y = CANVAS_HEIGHT - CAT_MARGIN
         elif self.direction == CAT_DOWN:
-            if self.y <= CANVAS_HEIGHT - CAT_MARGIN:
-                self.y += CAT_SPEED
+            self.y += CAT_SPEED
+            if self.y >= CANVAS_HEIGHT + CAT_MARGIN:
+                self.y = CAT_MARGIN
 
     def check_collision(self, fruit):
         if self.distance_to(fruit) <= CAT_CATCH_DISTANCE:
