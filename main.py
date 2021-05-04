@@ -24,6 +24,8 @@ def curvy_strategy(fruit):
 
 
 class Fruit(Sprite):
+    score = 0
+
     def strategy(self):
         linear_strategy(self, FRUIT_SLOW_SPEED)
 
@@ -39,11 +41,15 @@ class Fruit(Sprite):
 
 
 class SlowFruit(Fruit):
+    score = 1
+
     def __init__(self, app, x, y):
         super().__init__(app, 'images/apple.gif', x, y)
 
 
 class FastFruit(Fruit):
+    score = 2
+
     def __init__(self, app, x, y):
         super().__init__(app, 'images/banana.gif', x, y)
 
@@ -52,6 +58,8 @@ class FastFruit(Fruit):
 
 
 class SlideFruit(Fruit):
+    score = 3
+
     def __init__(self, app, x, y):
         super().__init__(app, 'images/cherry.gif', x, y)
 
@@ -62,6 +70,8 @@ class SlideFruit(Fruit):
 
 
 class CurvyFruit(Fruit):
+    score = 4
+
     def __init__(self, app, x, y):
         super().__init__(app, 'images/pear.gif', x, y)
 
@@ -91,7 +101,7 @@ class Cat(Sprite):
     def check_collision(self, fruit):
         if self.distance_to(fruit) <= CAT_CATCH_DISTANCE:
             fruit.to_be_deleted = True
-            self.app.score += 1
+            self.app.score += fruit.score
             self.app.update_score()
 
 
